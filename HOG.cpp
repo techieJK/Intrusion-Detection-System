@@ -71,7 +71,7 @@ int main()
             calculateFeaturesFromInput(currentFileName,featureVector,hog); //Calculate feature vector from current image file
             if(!featureVector.empty()) 
             {
-                File<<(currentFile<positiveTrainingImages.size())? "+1":"-1";
+                File<<((currentFile<positiveTrainingImages.size())? "+1":"-1");
                 for(unsigned int feature=0;feature<featureVector.size();++feature) //Save feature vector
                 {
                     File<<" "<<feature<<": "<<featureVector[feature];
