@@ -60,6 +60,13 @@ int main()
             vector<float> featureVector;
             // Get file path
             const string currentFileName = (currentFile<positiveTrainingImages.size())? positiveTrainingImages[currentFile]:negativeTrainingImages[currentFile-positiveTrainingImages.size()];
+            
+            // Output progress
+            if((currentFile+1)%10==0 || (currentFile+1)==overallSamples) 
+            {
+                percent=((currentFile+1)*100/overallSamples);
+                cout<<percent<<"% done\n";
+            }
                        
             calculateFeaturesFromInput(currentFileName,featureVector,hog); //Calculate feature vector from current image file
             if(!featureVector.empty()) 
