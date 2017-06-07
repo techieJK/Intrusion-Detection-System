@@ -17,6 +17,20 @@ const Size winStride=Size(8,8);
 void calculateFeaturesFromInput(const string& imageFilename, vector<float>& featureVector, HOGDescriptor& hog)
 {
     Mat imageData=imread(imageFilename,IMREAD_GRAYSCALE);
+	
+	if(imageData.empty()) //Check for error in reading file
+    {
+        featureVector.clear();
+        cout<<"Error "<<imageFilename;
+        return;
+    }
+    if(imageData.cols!=hog.winSize.width || imageData.rows!=hog.winSize.height) //Check for mismatching resolution
+    {
+        featureVector.clear();
+        cout<<"Error: "<<imageFilename<<" resolution"<<imageData.cols<<" "<<imageData.rows<<" do not match HOG window size!\n";
+        return;
+    }
+
     vector<Point> locations;
     hog.compute(imageData,featureVector,winStride,trainingPadding,locations); //Compute feature vectors
     imageData.release(); //Release the image again after features are extracted
