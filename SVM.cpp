@@ -31,19 +31,6 @@ int readData()
 	return j;
 }
 
-void readTestData()
-{
-	fstream DataSet;
-	DataSet.open("test.dat");
-	
-	int i=0,temp1;
-	char temp2;
-	for(i=0;i<=7523;i++)
-	{
-		DataSet>>temp1>>temp2>>testData[i];
-	}
-}
-
 int main()
 {
 	int j=readData(); //Read training data
@@ -52,26 +39,20 @@ int main()
    
 	// Set up SVM
 	Ptr<SVM> svm=SVM::create();
-	svm->setType(SVM::C_SVC);
+	svm->setCoef0(0.0);
+	svm->setDegree(3);
+	svm->setTermCriteria(TermCriteria(TermCriteria::MAX_ITER, 100, 1e-3));
+	svm->setGamma(0);
 	svm->setKernel(SVM::LINEAR);
-	svm->setTermCriteria(TermCriteria(TermCriteria::MAX_ITER, 100, 1e-6));
+	svm->setNu(0.5);
+	svm->setP(0.1); // for EPSILON_SVR, epsilon in loss function?
+	svm->setC(0.01); // From paper, soft classifier
+	svm->setType(SVM::EPS_SVR); // C_SVC; // EPSILON_SVR; // may be also NU_SVR; // do regression task
 	svm->train(trainingDataMat,ROW_SAMPLE,labelsMat);
 	
 
-	cout<<"\nReading test Data:\n ";
-	readTestData();
-	cout<<"\nDONE\n";
+	svm->save("savefile.xml");
 	
-	Mat query(1,7524,CV_32FC1,testData);
-	
-	float res;
-	res=svm->predict(query);
-	
-	if(res<0)
-		cout<<"\n"<<res<<"  NEGATIVE class\n";
-	else
-		cout<<"\n"<<res<<"  POSITIVE class\n";
-	
-	cout<<"SUCCESS\n";
+	cout<<"Training Done\n";
 	return 0;
 }
